@@ -19,14 +19,14 @@ def parse_compose_file(filepath: Path):
     services = []
     for name, specs in data['services'].items():
         ports = {}
-        for port in specs['ports']:
+        for port in specs.get('ports', []):
             hport, dport = port.split(':')
             if "udp" not in dport:
                 dport += "/tcp"
             ports[dport] = hport
 
         labels = {}
-        for label in specs['labels']:
+        for label in specs.get('labels', []):
             k, v = label.split('=', 1)
             labels[k] = v
 
