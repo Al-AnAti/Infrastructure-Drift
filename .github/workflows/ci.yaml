@@ -61,7 +61,8 @@ jobs:
           python-version: '3.11'
           
       - name: Install Dependencies
-        run: pip install docker ruamel.yaml
+        run: |
+          pip install -r requirements.txt
 
       - name: Spin up Base State
         run: docker compose -f docker-compose.test.yaml up -d
