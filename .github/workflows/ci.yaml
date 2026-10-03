@@ -1,0 +1,88 @@
+name: GitOps-Sentinel CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-enforce:
+    name: Test Enforce Mode (Heal Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Spin up Base State
+        run: docker compose -f docker-compose.test.yml up -d
+
+      - name: Sabotage Environment (Inject Drift)
+        run: |
+          # 1. Remove a service
+          docker rm -f $(docker ps -q -f name=web)
+          # 2. Create a rogue container
+          docker run -d --name rogue-nginx nginx:alpine
+          # 3. Modify the YAML (change a port mapping to simulate config drift)
+          sed -i 's/8080/8081/g' docker-compose.test.yml
+
+      - name: 🔨 Run Sentinel (Enforce Mode)
+        run: |
+          # Pipe '2' into the script to select Enforce
+          echo "2" | python main.py
+
+      - name: ✅ Verify Reconciliation
+        run: |
+          # Run it again, pipe '3' (Ignore) just in case it prompts, 
+          # and grep for the success message.
+          OUTPUT=$(echo "3" | python main.py)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep "State is fully reconciled"
+
+  test-adopt:
+    name: Test Adopt Mode (Heal YAML)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: pip install docker ruamel.yaml
+
+      - name: Spin up Base State
+        run: docker compose -f docker-compose.test.yml up -d
+
+      - name: Sabotage Environment (Inject Drift)
+        run: |
+          # 1. Remove a service
+          docker rm -f $(docker ps -q -f name=cache)
+          # 2. Create a rogue container
+          docker run -d --name rogue-postgres postgres:14-alpine
+          # 3. Modify the YAML
+          sed -i 's/8080/8081/g' docker-compose.test.yml
+
+      - name: 📥 Run Sentinel (Adopt Mode)
+        run: |
+          # Pipe '1' into the script to select Adopt
+          echo "1" | python main.py
+
+      - name: ✅ Verify Reconciliation
+        run: |
+          # The YAML should now perfectly match the sabotaged Docker state
+          OUTPUT=$(echo "3" | python main.py)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep "State is fully reconciled"
