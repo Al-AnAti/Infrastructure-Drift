@@ -31,7 +31,7 @@ jobs:
           # 1. Remove a service
           docker rm -f $(docker ps -q -f name=cache)
           # 2. Create a rogue container
-          docker run -d --name rogue-nginx nginx:alpine
+          docker run -d --name rogue-nginx -p 8089:80 nginx:alpine
           # 3. Modify the YAML (change a port mapping to simulate config drift)
           sed -i 's/8080/8081/g' docker-compose.test.yaml
 
@@ -72,7 +72,7 @@ jobs:
           # 1. Remove a service
           docker rm -f $(docker ps -q -f name=cache)
           # 2. Create a rogue container
-          docker run -d --name rogue-nginx nginx:alpine
+          docker run -d --name rogue-nginx -p 8089:80 nginx:alpine
           # 3. Modify the YAML
           sed -i 's/8080/8081/g' docker-compose.test.yaml
 
