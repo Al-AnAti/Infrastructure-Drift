@@ -29,7 +29,7 @@ jobs:
       - name: Sabotage Environment (Inject Drift)
         run: |
           # 1. Remove a service
-          docker rm -f $(docker ps -q -f name=web)
+          docker rm -f $(docker ps -q -f name=cache)
           # 2. Create a rogue container
           docker run -d --name rogue-nginx nginx:alpine
           # 3. Modify the YAML (change a port mapping to simulate config drift)
@@ -72,7 +72,7 @@ jobs:
           # 1. Remove a service
           docker rm -f $(docker ps -q -f name=cache)
           # 2. Create a rogue container
-          docker run -d --name rogue-postgres postgres:14-alpine
+          docker run -d --name rogue-nginx nginx:alpine
           # 3. Modify the YAML
           sed -i 's/8080/8081/g' docker-compose.test.yaml
 
