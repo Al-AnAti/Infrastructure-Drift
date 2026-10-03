@@ -35,7 +35,7 @@ class Reconciler:
 
     def _recreate_drifted_containers(self, report: DriftReport):
         for container_name in report.config_drifts.keys():
-            subprocess.run(["docker-compose", "-f", self.filepath, "up", "-d", container_name], check=True)
+            subprocess.run(["docker", "compose", "-f", self.filepath, "up", "-d", container_name], check=True)
 
 
     def adopt_state(self, report: DriftReport):
