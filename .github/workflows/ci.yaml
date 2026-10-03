@@ -24,7 +24,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Spin up Base State
-        run: docker compose -f docker-compose.test.yml up -d
+        run: docker compose -f docker-compose.test.yaml up -d
 
       - name: Sabotage Environment (Inject Drift)
         run: |
@@ -33,7 +33,7 @@ jobs:
           # 2. Create a rogue container
           docker run -d --name rogue-nginx nginx:alpine
           # 3. Modify the YAML (change a port mapping to simulate config drift)
-          sed -i 's/8080/8081/g' docker-compose.test.yml
+          sed -i 's/8080/8081/g' docker-compose.test.yaml
 
       - name: 🔨 Run Sentinel (Enforce Mode)
         run: |
@@ -64,7 +64,7 @@ jobs:
         run: pip install docker ruamel.yaml
 
       - name: Spin up Base State
-        run: docker compose -f docker-compose.test.yml up -d
+        run: docker compose -f docker-compose.test.yaml up -d
 
       - name: Sabotage Environment (Inject Drift)
         run: |
@@ -73,7 +73,7 @@ jobs:
           # 2. Create a rogue container
           docker run -d --name rogue-postgres postgres:14-alpine
           # 3. Modify the YAML
-          sed -i 's/8080/8081/g' docker-compose.test.yml
+          sed -i 's/8080/8081/g' docker-compose.test.yaml
 
       - name: 📥 Run Sentinel (Adopt Mode)
         run: |
