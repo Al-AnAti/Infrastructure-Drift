@@ -87,3 +87,9 @@ jobs:
           OUTPUT=$(echo "3" | python main.py)
           echo "$OUTPUT"
           echo "$OUTPUT" | grep "State is fully reconciled"
+
+      - name: 📦 Upload Reconciled YAML Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: adopted-compose-file
+          path: docker-compose.test.yaml
