@@ -10,11 +10,10 @@ services:
     labels:
       - "sentinel.managed=true"
       - "sentinel.repo=my-cs-project"
-  
   cache:
-    image: redis:alpine
+    image: redis:latest
     ports:
-      - "6379:6379"
+      - "6378:6378"
     labels:
-      - "sentinel.managed=true"
-      - "sentinel.repo=my-cs-project"
+      - "warden.managed=true"
+      - "warden.repo=my-cs-project"
