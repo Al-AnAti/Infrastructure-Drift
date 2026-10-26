@@ -16,7 +16,3 @@ services:
     labels:
       - "warden.managed=true"
       - "warden.repo=my-cs-project"
-  rogue-memcached:
-    image: memcached:alpine
-    ports:
-      - "11211:11211"
