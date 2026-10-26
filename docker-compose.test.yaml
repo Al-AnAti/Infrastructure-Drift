@@ -12,11 +12,7 @@ services:
   cache:
     image: redis:alpine
     ports:
-      - "6378:6378"
+      - "6379:6379"
     labels:
-      - "warden.managed=false"
-      - "warden.repo=not-my-cs-project"
-  rogue-memcached:
-    image: memcached:alpine
-    ports:
-      - "11211:11211"
+      - "warden.managed=true"
+      - "warden.repo=my-cs-project"
