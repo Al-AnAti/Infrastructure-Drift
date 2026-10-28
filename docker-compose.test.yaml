@@ -16,5 +16,3 @@ services:
     labels:
       - "warden.managed=true"
       - "warden.repo=my-cs-project"
-  web-adopted:
-    image: alpine
