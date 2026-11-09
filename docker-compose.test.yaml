@@ -16,3 +16,7 @@ services:
     labels:
       - "warden.managed=true"
       - "warden.repo=my-cs-project"
+  rogue-web:
+    image: nginx:alpine
+    ports:
+      - "8088:80"
