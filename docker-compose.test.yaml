@@ -16,3 +16,9 @@ services:
     labels:
       - "warden.managed=true"
       - "warden.repo=my-cs-project"
+  rogue-db:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
