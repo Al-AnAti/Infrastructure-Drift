@@ -12,11 +12,7 @@ services:
   cache:
     image: redis:alpine
     ports:
-      - "6378:6378"
+      - 6379:6379/tcp
     labels:
-      - "warden.managed=false"
-      - "warden.repo=not-my-cs-project"
-  rogue-web:
-    image: nginx:alpine
-    ports:
-      - "8088:80"
+      warden.managed: 'true'
+      warden.repo: my-cs-project
